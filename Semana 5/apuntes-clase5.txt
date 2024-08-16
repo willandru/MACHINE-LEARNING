@@ -1,0 +1,53 @@
+Curva ROC -> me permite evaluar que tan bueno es el clasificador.
+
+----REGRESION LINEAL-----------MACHINE LEARNING---------
+
+Y = b + mx
+
+valor real -> Y_i
+valor pronosticado -> Y^_i
+
+Metodo del gradiente - Direccion de movimiento: Me muevo en el sentido contrario de la derivada.
+
+ x_k+1 = x_k - alfa* (Vf(x_k))
+
+ alfa -> tasa de aprendizaje
+
+
+ ANALISIS DE REGRESION:
+
+ 2 pruebas de hipotesois
+
+ COMO SABER SI EL MODELO ES BUENO.
+
+ 1. S -> Que tan grande es el error.
+
+ 2. el MSE
+ 3. R^2
+ 4. Puebas de hipotesis
+
+
+ Los supuestos de REGRESION
+ - ÑLos residuos se distributyen normal con media cero
+ -lOS RESIDUOPLS
+
+
+ CRISP-DM
+
+1. Entender el negocio: como obtener ventajas, un producto de mayor calidad
+
+
+REGRESION -> MATRIZ EDE CORRELACIONES
+        Con hipoteses+
+            H0: Correlacion =04
+
+        EVITAR MULTICOLINEALIDAD
+
+
+        AIC ---> Cantidad de vairables -  Medida de la verosimilitud
+            Es bueno tener una mayor verosimiliturd.
+            Es bueno tener menos cantidad e vairables
+        
+        2 unidades de AIC entre modelos, significa una diferencia significativa.
+
+        
