@@ -1,0 +1,50 @@
+STEP-WISE: hacia adelante o hacia atras
+    step()
+
+Apalancamiento, residuales, distancia de cook
+
+F-stadistico
+    H0: El modelo con la variables es igual a un modelo sin las variables.
+
+
+Unidades
+
+RMSE -> Mismas unidades de Y
+MSE -> Y^2
+
+Exahustive search for model:
+    regsubsets()
+
+    anova dice 3 variables,
+    step dice 3 variables,
+    exhaustive dice 3 variables.
+
+
+    Regularizacion: Hacer el modelo más liviano o parsimonioso, para que el error en prueba sea bajo a psar de un error alto en entrenamiento. 
+    Si no logramos eso significa que la regularización no ha servido. 
+    
+    Regularizacion en
+
+nO ES BUENO LA PENDIENTE MUY "PARADA" O ELASTICA
+
+regulariacion consite en penalizar las pendientes (HACER LAS PENDIENTES SEAN MÁS PEQUEÑAS)
+
+    Lasso: Least Absolute Shrinkage and Selection Operator Regression : es otra version reglarizada de regresion lineal: añade un termino de regularizacion L1 a la funcion de costo.
+
+        Lleva a los coeficientes a 0
+        Objetivos de minimizacion: MSE + alfa*|m|   -> un factor alfa por el valor absoluto de la pendiente "m"
+
+        alfa ->  [ 0  -  infinito]  -> valor de encogimeinto. 0= no regularizacion
+
+        no todos los predictores son importantes, se decea que algunos queden en 0 y eso ocurre.
+
+    Ridge : Regularizacion orden 2 (L2): Le vamos a añadir la pendiente al cuadrado
+        Reduce la correlacion de los datos que no deberian tener. Si hay correlacionados elminia variables. 
+
+        MSE + alfa*m^2
+
+    ElasticNet (Lasso + Ridge)
+          ElasticNet:  MSE + LAMBDA[ alfa|m| + (1-alfa)m^2 ]
+
+    LAMBDA -> Parametro deregularizacion
+    Alfa -> Parametro de la red elastica -> 0, fully ridge, if =1 fully lasso.
