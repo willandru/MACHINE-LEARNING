@@ -1,0 +1,245 @@
+---
+title: "Regresion No Lineal"
+author: "willandru"
+date: "2024-08-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Regresion No Lineal:
+- **REGRESION POLINOMICA**
+- **TRANSFORMACION LOGARITMICA**
+- **REGRESION SPLINE**
+- **MODELOS ADITIVOS GENERALIZADOS**
+
+
+```{r }
+library("MASS")
+library(tidyverse)
+library(caret)
+library(ggplot2)
+library(splines)
+library(mgcv)
+```
+
+
+```{r }
+data("Boston")
+glimpse(Boston)
+
+```
+
+## The Boston Housing Dataset
+
+The Boston Housing Dataset is a derived from information collected by the U.S. Census Service concerning housing in the area of Boston MA. The following describes the dataset columns:
+
+CRIM - per capita crime rate by town
+ZN - proportion of residential land zoned for lots over 25,000 sq.ft
+INDUS - proportion of non-retail business acres per town
+CHAS - Charles River dummy variable (1 if tract bounds river; 0 otherwise)
+NOX - nitric oxides concentration (parts per 10 million)
+RM - average number of rooms per dwelling
+AGE - proportion of owner-occupied units built prior to 1940
+DIS - weighted distances to five Boston employment centres
+RAD - index of accessibility to radial highways
+TAX - full-value property-tax rate per 10,000 dollars
+PTRATIO - pupil-teacher ratio by town
+B - 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town
+LSTAT - % lower status of the population
+MEDV - Median value of owner-occupied homes in $1000's
+```{r }
+
+plot(Boston$lstat,Boston$medv)
+```
+
+
+```{r }
+set.seed(123)
+training.samples<-Boston$medv %>%
+   createDataPartition(p=0.8,list=FALSE)
+train.data<-Boston[training.samples, ]
+test.data<-Boston[-training.samples, ]
+
+```
+
+# REGRESION LINEAL
+```{r }
+model<-lm(medv~lstat,data=train.data)
+predictions<-model %>% predict(test.data)
+data.frame(
+  RMSE=RMSE(predictions,test.data$medv),
+  R2=R2(predictions,test.data$medv)
+)
+
+```
+
+```{r }
+ggplot(train.data, aes(lstat,medv))+
+  geom_point()+
+  stat_smooth(method=lm, formula=y~x)
+
+```
+
+# REGRESION POLINOMICA
+
+El modelo sin variables vs el modelo con variables:
+
+En regresion lineal hacemos 2 pruebas de hipotesis: 
+1. Para el modelo en general-> H0: modelo = modelo sin variables
+2. Para cada coeficiente del modelo
+
+A continuacion vemos que p-value: < 2.2e-16, por lo que rechazamos la H0: modelo = modelo sin variables
+
+
+Grado 2
+
+```{r }
+model<-lm(medv~poly(lstat,2),data=train.data)
+summary(model)
+
+```
+
+Grado 6
+
+```{r }
+model<-lm(medv~poly(lstat,6),data=train.data)
+summary(model)
+
+```
+
+Grado 3
+
+```{r }
+model<-lm(medv~poly(lstat,3),data=train.data)
+summary(model)
+
+```
+
+```{r }
+model<-lm(medv~poly(lstat,5),data=train.data)
+predictions<-model %>% predict(test.data)
+data.frame(
+  RMSE=RMSE(predictions,test.data$medv),
+  R2=R2(predictions,test.data$medv)
+)
+
+```
+
+```{r }
+ggplot(train.data, aes(lstat,medv))+
+  geom_point()+
+  stat_smooth(method=lm,formula=y~poly(x,5))
+
+```
+
+
+# TRANSFORMACION LOGARITMICA
+
+```{r }
+
+model<-lm(medv~log(lstat),data=train.data)
+predictions<-model %>% predict(test.data)
+data.frame(
+  RMSE=RMSE(predictions,test.data$medv),
+  R2=R2(predictions,test.data$medv)
+)
+```
+
+```{r }
+ggplot(train.data, aes(lstat,medv))+
+  geom_point()+
+  stat_smooth(method=lm,formula=y~log(x))
+
+```
+
+# REGRESION SPLINE
+
+Otra forma de tratar las relaciones no lineales es la regresión spline. Aquí, como en la regresión polinómica, el modelo se crea tomando grados. Además, se obtienen los valores de los nudos (knots) y se puede crear la línea de regresión combinando adecuadamente los nudos con el grado especificado. En la regresión spline, se suele establecer un modelo con un 3er grado. Ahora, vamos a comprobar los resultados aplicando este método al conjunto de datos de entrenamiento:
+
+NOSOTROS DEBEMOS ESCOGER DONDE VAMOS A PONER LOS 'NUDOS' DEL SPLINE
+
+¿donde?
+
+busco el percentil-10 de los datos en mis X.
+busco el percentil-50
+busco el percentil-90
+
+[0-10][10-50][50-90][90-100] <- 3 nudos
+
+Acá 'bs' indica splines
+
+```{r }
+knots<-quantile(train.data$lstat,p=c(0.10,0.50,0.90))
+model<-lm(medv~bs(lstat, knots=knots),data=train.data)
+predictions<-model %>% predict(test.data)
+data.frame(
+  RMSE=RMSE(predictions,test.data$medv),
+  R2=R2(predictions,test.data$medv)
+)
+
+```
+
+```{r }
+ggplot(train.data, aes(lstat,medv))+
+  geom_point()+
+  stat_smooth(method=lm,formula=y~splines::bs(x,df=3))
+
+```
+
+# MODELOS ADITIVOS GENERALIZADOS
+
+
+En la regresión polinómica, se determinan los grados, y en la regresión spline, se determinan los nUdos y se crean los modelos. En los modelos aditivos generalizados, no ocurre lo mismo. La estimación de los datos puede obtenerse automáticamente. Para los modelos aditivos generalizados, debe utilizarse la función «gam» en R:
+
+https://www.stat.cmu.edu/~ryantibs/advmethods/notes/smoothspline.pdf
+
+```{r }
+model<-gam(medv~ s(lstat),data=train.data)
+predictions<-model %>% predict(test.data)
+data.frame(
+  RMSE=RMSE(predictions,test.data$medv),
+  R2=R2(predictions,test.data$medv)
+)
+
+```
+
+
+```{r }
+ggplot(train.data, aes(lstat,medv))+
+  geom_point()+
+  stat_smooth(method=gam,formula=y~s(x))
+
+```
+
+
+## CONCLUSIÓN
+
+Hemos analizado métodos alternativos que pueden utilizarse para modelizar relaciones no lineales y los hemos comparado en función de los criterios RMSE y coeficiente de determinación. Como resultado, podemos decir que la regresión polinómica, la regresión spline y los modelos aditivos generalizados pueden preferirse para este conjunto de datos.
+
+```{r }
+
+
+```
+
+```{r }
+
+
+```
+
+```{r }
+
+
+```
+
+```{r }
+
+
+```
+
+```{r }
+
+
+```

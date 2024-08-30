@@ -1,0 +1,20 @@
+
+
+Sigmoide
+
+ODDS -> (1-P)/P
+
+P=75%
+Odds <- 3/1  
+
+
+Odd Ratio :
+
+X1 >- odd1
+x2 >- odd2
+
+odd_Ratio : odd1/odd2
+
+
+INTERPRETACION DELOS MODELOS DE REGRESION LOGISTICA.
+Se analizas o interpretan en terminos del odd_Ratio
