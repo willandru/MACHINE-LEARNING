@@ -1,0 +1,117 @@
+---
+title: "KNN y Naive Bayes"
+author: "willandru"
+date: "2024-09-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+### Cargamos Librerias Requeridas
+
+```{r }
+if (!require('readxl')) install.packages('readxl')
+if (!require('caret')) install.packages('caret')
+if (!require('MLmetrics')) install.packages('MLmetrics')
+if (!require('e1071')) install.packages('e1071')
+```
+
+```{r }
+library(readxl)
+library(caret)
+library(MLmetrics)
+library(ROCR)
+library(e1071)
+```
+
+### Cargamos el Dataset
+
+```{r }
+cartera <- read_excel("Datos KNN - Naive Bayes/carteraguia2017.xlsx")
+
+```
+
+
+```{r }
+str(cartera)
+```
+
+El archivo contiene datos de clientes de un proveedor de instituciones de salud (IPS), la cartera que presentan y si se han retrasado o no. Se trata entonces de un negocio B2B en el sector de la salud que desea predecir o averiguar indicadores de posibles aumentos y retrasos en su cartera.
+
+Entre las variables predictoras se incluyen:
+
+- **MESES**: Los meses que la empresa lleva siendo cliente del proveedor.
+- **Tipo_IPS**: De 1 a 5, el nivel de complejidad de la institución de salud cliente (1 = bajo, 5 = alto).
+- **IGUAL_DUEÑO**: Número de años en que la IPS ha tenido el mismo dueño.
+- **AGNOS_DIRECCION_ACTUAL**: Número de años en que la IPS ha estado en la misma dirección.
+- **VENTAS_MENS_PROMEDIO**: Valor de ventas mensuales promedio de la IPS en millones de pesos.
+- **PORC_PASIVOS_VENTA_ANUAL**: Porcentaje de pasivos / venta anual del último balance disponible.
+- **CARTERA_ACTUAL_INSUMOS_A**: Valor de la deuda con el proveedor en insumos de alta rotación (gasa, jeringas, por ejemplo) en millones de pesos.
+- **CARTERA_ACTUAL_INSUMOS_B**: Valor de la deuda con el proveedor en insumos de baja rotación (equipos, instrumentos, por ejemplo) en millones de pesos.
+
+La variable a predecir son los **RETRASOS**, que indican si el cliente se ha retrasado o no, siendo `1 = sí` y `0 = No`.
+
+### Preparación del Dataset
+
+Primero vamos a convertir a factores las dos variables que lo requieren: Tipo IPS y Retrasos. También vamos a crear variables binarias para los tipos de IPS y luego retirar la variable TIPO IPS.
+
+```{r }
+cartera$TIPOips<-as.factor(cartera$TIPO_ips)
+```
+
+```{r }
+##Crea un set completo de variables dummy
+carterawin<-dummyVars("~.",data=cartera)
+carterafin<-as.data.frame(predict(carterawin,newdata=cartera))
+carterafin2<-within(carterafin,rm(TIPOips.5,TIPO_ips))
+carterafin2$retrasos<-as.factor(carterafin2$retrasos)
+carterafin2$retrasos<-factor(carterafin2$retrasos,ordered=TRUE, levels=c("0","1"))
+```
+
+
+
+```{r }
+
+```
+
+
+```{r }
+
+```
+
+
+```{r }
+
+```
+
+```{r }
+
+```
+
+```{r }
+
+```
+
+```{r }
+
+```
+
+```{r }
+
+```
+
+```{r }
+
+```
+
+```{r }
+
+```
