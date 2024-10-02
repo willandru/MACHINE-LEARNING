@@ -1,0 +1,66 @@
+---
+title: "Regresion - Ropa de mujeres"
+author: "willandru"
+date: "2024-10-02"
+output: pdf_document
+---
+
+```{r }
+library(caret)
+```
+
+```{r }
+data.train <-read.csv("train.csv")
+str(data.train)
+```
+
+
+```{r }
+dummies <-dummyVars(~ tamamer ,data=data.train)
+dummies <- as.data.frame(predict(dummies,newdata=data.train))
+dummies <- dummies[,-1]
+
+```
+
+
+```{r }
+data.train <- data.train[,-10]
+
+data.train <- cbind(data.train, dummies)
+str(data.train)
+```
+
+
+## MODELO SIMPLE
+
+```{r }
+modelo1<-lm(ropamujer~.,data=data.train)
+summary(modelo1)
+```
+
+## MODELO STEP
+
+
+```{r }
+modeloStep<-step(modelo1,direction="both",trace=0)
+summary(modeloStep)
+```
+
+
+
+```{r }
+
+```
+
+
+
+```{r, include=FALSE }
+
+```
+
+
+
+
+```{r }
+
+```
